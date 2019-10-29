@@ -1,7 +1,11 @@
 import React from 'react';
 import * as qh from 'qwerty-hancock';
+import { useDispatch } from 'react-redux';
+import { playNote, stopNote } from './actions';
+
 
 export function Keyboard() {
+    const dispatch = useDispatch();
     const elem = React.useRef(null);
 
     React.useEffect(() => {
@@ -13,12 +17,13 @@ export function Keyboard() {
             octaves: 2
         });
 
-        qwerty.keyDown = (key: string) => {
-            console.log(key + ' down')
+        qwerty.keyDown = (note: string) => {
+            dispatch(playNote(note));
         };
 
-        qwerty.keyUp = (key: string) => {
-            console.log(key + ' up')};
+        qwerty.keyUp = (note: string) => {
+            dispatch(stopNote(note));
+        }
     });
 
     return (

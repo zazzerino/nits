@@ -7,10 +7,13 @@
     "@types/node": "12.11.7",
     "@types/react": "16.9.11",
     "@types/react-dom": "16.9.3",
+    "@types/react-redux": "^7.1.5",
     "qwerty-hancock": "^0.6.0",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
+    "react-redux": "^7.1.1",
     "react-scripts": "3.2.0",
+    "redux": "^4.0.4",
     "tone": "^13.8.25",
     "typescript": "3.6.4"
   },

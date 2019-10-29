@@ -1,74 +1,68 @@
 import * as tone from 'tone';
+import { NoteName } from './theory';
 
 interface SynthNote {
-    note: string,
+    note: NoteName,
     synth: any
 }
 
-function makeSynth() {
-    return new tone.Synth().toMaster();
-}
+function noteEqual(...synthNotes: SynthNote[]) {
+    const firstNote = synthNotes[0].note;
 
-function findSynthNote(note: string, notes: SynthNote[]): SynthNote | null {
-    for (const synthNote of notes) {
-        if (note === synthNote.note) {
-            return synthNote;
-        }
-    }
-    return null;
+    return synthNotes.every((n: SynthNote) => {
+        return n.note === firstNote;
+    });
 }
 
 export class Synth {
     notes: SynthNote[] = [];
 
-    play(note: string) {
-        const synthNote = findSynthNote(note, this.notes);
+    playNote(note: NoteName) {
+        const foundNote = this.notes.find(n => {
+            return note === n.note;
+        });
 
-        if (synthNote != null) {
-            // if note is already playing, do nothing
+        if (foundNote != null) {
             return;
         }
 
-        const synth = makeSynth();
+        const synth = new tone.Synth().toMaster();
         synth.triggerAttack(note);
+
 
         this.notes.push({
             note,
             synth
         });
-        console.log(this.notes);
     }
 
-    stop(note: string) {
-        const synthNote = findSynthNote(note, this.notes);
+    stopNote(note: NoteName) {
+        const foundNote = this.notes.find(n => {
+            return note === n.note;
+        });
 
-        if (synthNote == null) {
-            // if note wasn't playing, do nothing
+        if (!foundNote) {
             return;
         }
 
-        let index: number;
+        const synth = foundNote.synth;
 
-        for (let i = 0; i < this.notes.length; i++) {
-            if (note === this.notes[i].note) {
-                index = i;
-                break;
-            }
+        if (synth == null) {
+            throw new Error(`synth is null.`);
         }
 
-        if (index == undefined) {
-            throw new Error("SynthNote index not found.")
-        }
+        synth.triggerRelease();
 
-        synthNote.synth.triggerRelease(synthNote.note);
-
-        this.notes.splice(index, 1);
-        console.log(this.notes);
+        this.notes = this.notes.filter((n: SynthNote) => {
+            return !noteEqual(n, { note, synth: null });
+        });
     }
 
     stopAll() {
         for (let note of this.notes) {
             note.synth.triggerRelease();
         }
+
+        this.notes = [];
     }
 }
