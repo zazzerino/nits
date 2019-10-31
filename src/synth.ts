@@ -1,5 +1,5 @@
 import * as tone from 'tone';
-import { NoteName } from './theory';
+import { NoteName, equalTemp, noteFrequency } from './theory';
 
 interface SynthNote {
     note: NoteName,
@@ -64,5 +64,29 @@ export class Synth {
         }
 
         this.notes = [];
+    }
+
+    retune(note: NoteName, a4Freq = 440, temperament = equalTemp) {
+        const newFreq = noteFrequency(note, a4Freq, temperament);
+
+        const foundNote = this.notes.find(n => {
+            return note === n.note;
+        });
+
+        if (!foundNote) {
+            return;
+        }
+
+        const synth = foundNote.synth;
+
+
+
+        // const synth = this.notes.find(n => {
+        //     return note === n.note;
+        // }).synth;
+
+        // if (synth != null) {
+            synth.frequency.setValueAtTime(newFreq);
+        // }
     }
 }

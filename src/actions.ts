@@ -1,4 +1,4 @@
-import { NoteName } from './theory';
+import { NoteName, equalTemp } from './theory';
 import { Synth } from './synth';
 
 const synth = new Synth();
@@ -28,6 +28,7 @@ export interface StopAllNotesAction {
 // action creators
 
 export function playNote(note: NoteName): PlayNoteAction {
+    synth.retune(note, 111, equalTemp);
     synth.playNote(note);
 
     return {
